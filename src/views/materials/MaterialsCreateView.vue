@@ -40,19 +40,6 @@
                            </select>
                         </div>
 
-                        <div class="input-group mb-3">
-                           <span class="input-group-text"><strong>Autor</strong></span>
-                           <select v-model="selectedAuthor" id="educationlevels" class="form-control" maxlength="50" >
-                                <option v-for="author in authors" :key="author.id_author" v-bind:value="author.id_author" > 
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                        <label class="form-check-label" for="flexCheckDefault">
-                                            {{ author.name_author }}
-                                        </label>
-                                    </div>
-                                </option>
-                           </select>
-                        </div>
                         
 
                         <div class="input-group mb-3">
@@ -79,86 +66,92 @@
 </template>
 
 
-<script>
-import { show_alerta } from '@/alerts';
-import axios from 'axios';
 
+<script>
+import { show_alert } from '../../plugins/alerts';
 
 export default{
    data(){
-       return {
-           name: null,
+        return {
+            name: null,
+
+            docMin: 'https://images.pexels.com/photos/762687/pexels-photo-762687.jpeg?auto=compress&cs=tinysrgb&w=1600',
+            document:null,
 
 
-           docMin: 'https://images.pexels.com/photos/762687/pexels-photo-762687.jpeg?auto=compress&cs=tinysrgb&w=1600',
-           document:null,
+            selectedType: '',
+            selectedEditorial: '',
+            selectedEdLevel: '',
+            selectedAuthor: '',
+        }
+    },
+    created() {
+        this.$store.dispatch("getTypeMaterials");
+        this.$store.dispatch("getEditorials");
+        this.$store.dispatch("getAuthors");
+        this.$store.dispatch("getEdlevels");
+    },
+   
+    computed: {
+        editorials() {
+            return this.$store.getters.obtenerEditorials;
+        },
+        typematerials() {
+            return this.$store.getters.obtenerTypeMaterials;
+        },
+        authors() {
+            return this.$store.getters.obtenerAuthors;
+        },
+        edlevels() {
+            return this.$store.getters.obtenerEdlevels;
+        },
+    },
+    methods:{
+        createMaterial() {
+           event.preventDefault();
+           const material = {
+                    name_material: this.name.trim(),
+                    type_material_id: this.selectedType,
+                    editorial_id: this.selectedEditorial,
+                    author_id: this.selectedAuthor,
+                    education_level_id: this.selectedEdLevel,
+                    document: this.document
+           }
+        //    console.log('Aquí');
+        //    console.log(material);
+
+           
+            this.$store.dispatch("createMaterial", material)
+            .then((response) => {
+                if (response.status == "success") {
+                    show_alert('Material registrado correctamente', );
+                        window.setTimeout(function() {
+                            window.location.href='/materials';
+                        }, 1000);
+                } 
+                else {
+                    show_alert(response.message, 'danger')
+                    console.log('Aquí');
+                    console.log(response);
+
+                }
+
+                setTimeout(() => {
+                    this.alert = false;
+                }, 3000);
+                })
+            .catch(() => {
+            });
+        },
 
 
-           typematerials: null,
-           editorials: null,
-           edlevels: null,
-           authors:null,
 
-
-           urlBase: 'http://localhost:8000/api/',
-
-
-           selectedType: '',
-           selectedEditorial: '',
-           selectedEdLevel: '',
-           selectedAuthor: '',
-
-
-       }
-   },
-   mounted() {
-       this.getSelects(),
-       this.doc()
-      
-       // this.getTypeMaterials(),
-       // this.getEditorials(),
-       // this.getEdLevels(),
-       // this.getAuthors()
-   },
-   methods:{
-
+        //Document
 
         doc() {  
             return this.docMin;
         },
 
-
-        getSelects() {
-            axios.get(this.urlBase+'authors').then(
-                response => {
-                    this.authors = response.data.results
-                }
-            )
-
-
-            axios.get(this.urlBase+'educationlevels').then(
-                response => {
-                    this.edlevels = response.data.results
-                }
-            )
-
-
-            axios.get(this.urlBase+'editorials').then(
-                response => {
-                    this.editorials = response.data.results
-                }
-            )
-
-
-            axios.get(this.urlBase+'typematerials').then(
-                response => {
-                    this.typematerials = response.data.results
-                }
-            )
-        },
-
-
-        
         getDocument(event) {
             let file = event.target.files[0];
             console.log(file);
@@ -177,88 +170,8 @@ export default{
             reader.readAsDataURL(file);
         },
 
-
-        createMaterial() {
-            event.preventDefault();
-                
-                var parametros = {
-                    name_material: this.name.trim(),
-                    name_material: this.name.trim(),
-                    type_material_id: this.selectedType,
-                    editorial_id: this.selectedEditorial,
-                    author_id: this.selectedAuthor,
-                    education_level_id: this.selectedEdLevel,
-                    document: this.document
-                    }
-
-
-                console.log(parametros);
-
-
-
-
-            var url = 'http://localhost:8000/api/materials';
-            
-            axios({method:'POST', url:url, data:parametros, headers : {'content-type': 'multipart/form-data'} }).then(function(respuesta){
-                    console.log(respuesta.data);
-                    var status = respuesta.data['status'];
-
-
-                    if (status == 'success') {
-                        show_alerta('Material guardado correctamente', status);
-                        window.setTimeout(function() {
-                            window.location.href='/materials';
-                        }, 1000);
-                    }else{
-                        var listado ='';
-                        var errores = respuesta.data['errores'];
-                        Object.keys(errores).forEach(
-                            key =>  listado += errores[key][0]+'.'
-                        );
-                        show_alerta(listado, 'error');
-                    }
-            }).catch(function(error){
-                show_alerta('Error en la solicitud', 'error');
-            })
-                
-        }
-
-
-       // getAuthors(){
-       //     axios.get(this.urlBase+'authors').then(
-       //         response => {
-       //             this.authors = response.data.results
-       //         }
-       //     )
-       // },
-      
-       // getEdLevels(){
-       //     axios.get(this.urlBase+'educationlevels').then(
-       //         response => {
-       //             this.edlevels = response.data.results
-       //         }
-       //     )
-       // },
-
-
-       // getEditorials(){
-       //     axios.get(this.urlBase+'editorials').then(
-       //         response => {
-       //             this.editorials = response.data.results
-       //         }
-       //     )
-       // },
-
-
-       // getTypeMaterials(){
-       //     axios.get(this.urlBase+'typematerials').then(
-       //         response => {
-       //             this.typematerials = response.data.results
-       //         }
-       //     )
-       // },
    }
 }
 
-
 </script>
+

@@ -1,6 +1,7 @@
 
-import HomeView from '../views/HomeView.vue'
+import HomeView from '../views/home/HomeView.vue'
 
+import LoginView from '../views/auth/LoginView'
 
 import UserList from '../views/users/UserListView'
 import UserCreate from '../views/users/UserCreateView'
@@ -22,20 +23,22 @@ import TypeMaList from '../views/type_materials/TypeMaListView'
 import TypeMaCreate from '../views/type_materials/TypeMaCreateView'
 import TypeMaEdit from '../views/type_materials/TypeMaEditView'
 
+import MaterialsList from '../views/materials/MaterialsListView'
+import MaterialsCreate from '../views/materials/MaterialsCreateView'
+import MaterialsEdit from '../views/materials/MaterialsEditView'
+import MaterialsDetail from '../views/materials/MaterialsDetailView'
+
 export const routes = [
   {
     path: '/',
     name: 'home',
     component: HomeView
   },
-  // {
-  //   path: '/about',
-  //   name: 'about',
-  //   // route level code-splitting
-  //   // this generates a separate chunk (about.[hash].js) for this route
-  //   // which is lazy-loaded when the route is visited.
-  //   component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-  // }
+  {
+    path: '/login',
+    name: 'login',
+    component: LoginView
+  },
 
   //Usuarios
   {
@@ -52,6 +55,28 @@ export const routes = [
     path: '/users/edit/:id',
     name: 'usersedit',
     component:  UserEdit
+  },
+
+  //Materiales
+  {
+    path: '/materials',
+    name: 'materials',
+    component: MaterialsList
+  },
+  {
+    path: '/materials/create',
+    name: 'materialscreate',
+    component:  MaterialsCreate
+  },
+  {
+    path: '/materials/edit/:id',
+    name: 'materialsedit',
+    component:  MaterialsEdit
+  },
+  {
+    path: '/materials/detail/:id',
+    name: 'materialsdetail',
+    component:  MaterialsDetail
   },
 
    //editoriales

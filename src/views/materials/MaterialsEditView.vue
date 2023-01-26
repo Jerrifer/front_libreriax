@@ -64,126 +64,109 @@
    </div>
 </template>
 
+
+
 <script>
-    import { show_alerta } from '../../alerts';
-    import { useRoute } from 'vue-router';
-    import axios from 'axios';
+    import { show_alert, swalWithBootstrapButtons } from '../../plugins/alerts';
+    //import { useRoute } from 'vue-router';
 
 export default{
    data(){
        return {
-    
             name: '',
 
             docMin: '',
-            document:'',
+            document:null,
 
-            typematerials: '',
-            editorials: '',
-            edlevels: '',
-            authors: '',
-
-            urlBase: 'http://localhost:8000/api/',
-            urlMaterial: 'http://localhost:8000/api/materials/',
 
             selectedType: '',
             selectedEditorial: '',
             selectedEdLevel: '',
             selectedAuthor: '',
+
+
     }
    },
-   mounted(){
-        const route = useRoute();
-        this.id_material = route.params.id;
-        this.getSelects();
-        this.getMaterial();
-
-   },
-   methods:{
-
-
-        getMaterial() {
-            axios.get(this.urlMaterial+this.id_material).then(
-                respuesta => (
-                    this.name = respuesta.data.results[0].name_material,
-                    this.docMin = 'http://127.0.0.1:8000/storage/document_folder/'+respuesta.data.results[0].document,
-                    this.selectedEditorial = respuesta.data.results[0].id_editorial,
-                    this.selectedType = respuesta.data.results[0].id_type_material,
-
-
-                    console.log(respuesta.data.results[0].id_editorial)
-                )
-            )
+   created() {
+        this.$store.dispatch("getTypeMaterials");
+        this.$store.dispatch("getEditorials");
+        this.$store.dispatch("getAuthors");
+        this.$store.dispatch("getEdlevels");
+    },
+   
+    computed: {
+        editorials() {
+            return this.$store.getters.obtenerEditorials;
         },
-
-        getSelects() {
-            axios.get(this.urlBase+'authors').then(
-                response => {
-                    this.authors = response.data.results
-                }
-            )
-
-
-            axios.get(this.urlBase+'educationlevels').then(
-                response => {
-                    this.edlevels = response.data.results
-                }
-            )
-
-
-            axios.get(this.urlBase+'editorials').then(
-                response => {
-                    this.editorials = response.data.results
-                }
-            )
-
-
-            axios.get(this.urlBase+'typematerials').then(
-                response => {
-                    this.typematerials = response.data.results
-                }
-            )
+        typematerials() {
+            return this.$store.getters.obtenerTypeMaterials;
         },
+        authors() {
+            return this.$store.getters.obtenerAuthors;
+        },
+        edlevels() {
+            return this.$store.getters.obtenerEdlevels;
+        },
+    },
+    mounted(){
+        this.id_material = this.$route.params.id;
+        console.log(this.id_material);
+        this.$store.dispatch("getMaterial", this.id_material)
+        .then((response) => {
+            this.name = response.name_material
+            this.docMin = 'http://127.0.0.1:8000/storage/document_folder/'+response.document,
+            this.selectedEditorial = response.id_editorial,
+            this.selectedType = response.id_type_material,
+            console.log('hola')
+            console.log(response.name_material)
+        })
+    },
+    methods:{
 
         updateMaterial() {
-           event.preventDefault();
-           var parametros = {
-                name_material: this.name.trim(),
-                name_material: this.name.trim(),
-                type_material_id: this.selectedType,
-                editorial_id: this.selectedEditorial,
-                author_id: this.selectedAuthor,
-                education_level_id: this.selectedEdLevel,
-                document: this.document
-           }
+            event.preventDefault();
+            const material = {
+                    id_material: this.id_material,
+                    name_material: this.name.trim()
+            }
 
-           console.log(parametros);
+            console.log(material);
 
-           var url = this.urlMaterial+this.id_material;
-           
-           axios({method:'PUT', url:url, data:parametros}).then(function(respuesta){
-                   console.log(respuesta.data);
-                   var status = respuesta.data['status'];
+            swalWithBootstrapButtons.fire({
+                    title: '¿Seguro de actualizar el material?',
+                    text: 'Se actulizará la información del material',
+                    icon: 'question',
+                    showCancelButton:true,
+                    confirmButtonText:'<i class="fa-solid fa-check"></i> Si, actualizar',
+                    cancelButtonText:'<i class="fa-solid fa-ban"></i> Cancelar'
+                }).then((ressult) => {
 
-                   if (status == 'success') {
-                       show_alerta('Material actualizado correctamente', status);
-                       window.setTimeout(function() {
-                           window.location.href='/materials';
-                       }, 1000);
-                   }else{
-                       var listado ='';
-                       var errores = respuesta.data['errores'];
-                       Object.keys(errores).forEach(
-                           key =>  listado += errores[key][0]+'.'
-                       );
-                       show_alerta(listado, 'error');
-                   }
-           }).catch(function(error){
-               show_alerta('Error en la solicitud', error);
-           })
-               
+                //Confirma eliminación
+                if (ressult.isConfirmed) {
+                    this.$store.dispatch("updateMaterial", material)
+                        .then((response) => {
+                        console.log(response.status);
+                        if (response.status == "success") {
+                            show_alert('Actualizado exitosamente', 'success');
+                            window.setTimeout(function() {
+                                window.location.href='/materials';
+                            }, 1000);
+                        } else {
+                            show_alert(response.message, 'danger');
+
+                        }
+                        //   this.$store.dispatch("gestionarSedes");
+                        //   setTimeout(3000);
+                        })
+                        .catch(function(){
+                            show_alert('Error en la solicitud', 'error');
+                        })
+                    }else{
+                        show_alert('operación cancelada', 'info');
+                    }
+
+            });
         },
-
 
         getDocument(event) {
             let file = event.target.files[0];
@@ -208,4 +191,6 @@ export default{
    }
 }
 
-</script>
+</script> 
+
+

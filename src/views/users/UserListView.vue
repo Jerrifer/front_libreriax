@@ -57,7 +57,7 @@ export default {
   },  
   computed: {
 
-    tmaterials() {
+    users() {
       return this.$store.getters.obtenerUsers;
     },
 

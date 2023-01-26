@@ -65,45 +65,31 @@
     </div>
 </template>
 
+
+
 <script>
+import { show_alert, swalWithBootstrapButtons } from '../../plugins/alerts.js'
 
-import axios from 'axios';
-import Swal from "sweetalert2";
-import { show_alerta } from '@/alerts';
+export default {
 
-export default{
-    data(){
-        return {materials: null,
-            urlMaterial: 'http://localhost:8000/api/materials'
-        };
+  created() {
+    this.$store.dispatch("getMaterials");
+
+  },  
+  computed: {
+
+    materials() {
+      return this.$store.getters.obtenerMaterials;
     },
 
-    mounted(){
-        this.getMaterials();
-    },
+  },
 
-    methods:{
+  methods: {
 
-        getMaterials(){
-            axios.get(this.urlMaterial).then(
-                response=> {
-                    this.materials = response.data.results;
-                    console.log(response.data.results);
+    deleteMaterial(id, name) {
 
-                }
-            )
-        },
-
-        deleteMaterial(id, name) {
-            var url = this.urlMaterial+'/'+id;
-
-            //SweetAlert
-            const swalWithBootstrapButtons = Swal.mixin({
-                customClass:{confirmButton: 'btn btn-success me-3',cancelButton:'btn btn-danger'},
-                buttonsStyling:false
-            });
-            swalWithBootstrapButtons.fire({
-                title: 'Seguro de eliminar el material '+name,
+        swalWithBootstrapButtons.fire({
+                title: '¿Seguro de eliminar el material '+name+'?',
                 text: 'Se perderá la información del material',
                 icon: 'question',
                 showCancelButton:true,
@@ -111,40 +97,36 @@ export default{
                 cancelButtonText:'<i class="fa-solid fa-ban"></i> Cancelar'
             }).then((ressult) => {
 
-                //Confirma eliminación
-                if (ressult.isConfirmed) {
-                    
-                    axios({method:'DELETE', url:url, data:id}).then(function(respuesta){
-                        console.log(respuesta.data);
-                        var status = respuesta.data['status'];
+              //Confirma eliminación
+              if (ressult.isConfirmed) {
+                this.$store.dispatch("deleteMaterial", id)
+                    .then((response) => {
+                      console.log(response.status);
+                      if (response.status == "success") {
+                        show_alert('Eliminado exitosamente', 'success');
+                        window.setTimeout(function() {
+                            window.location.href='/materials';
+                        }, 1000);
+                      } else {
+                        show_alert(response.message, 'danger');
 
-                        if (status == 'success') {
-
-                            show_alerta('Eliminado exitosamente', 'success');
-                            
-                            window.setTimeout(function() {
-                                window.location.href='/materials';
-                            }, 1000);
-                        }else{
-                            var listado ='';
-                            var errores = respuesta.data['errores'];
-                            Object.keys(errores).forEach(
-                                key =>  listado += errores[key][0]+'.'
-                            );
-                            show_alerta(listado, 'error');
-                        }
-                    }).catch(function(error){
-                        console.log(error);
-
-                        show_alerta('Error en la solicitud', 'error');
-                        })
+                      }
+                    //   this.$store.dispatch("gestionarSedes");
+                    //   setTimeout(3000);
+                    })
+                    .catch(function(error){
+                      show_alert('Error en la solicitud', error);
+                    })
                 }else{
-                     show_alerta('operación cancelada', 'success');
-                }})
-        },
+                     show_alert('operación cancelada', 'info');
+                }
 
-       
-    }
+       });
+    },
+  }
+
 
 }
 </script>
+
+

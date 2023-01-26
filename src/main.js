@@ -21,6 +21,7 @@ const router = new VueRouter({
 axios.defaults.baseURL = "http://127.0.0.1:8000"
 axios.defaults.withCredentials = false
 
+axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('access_token')}`
 
 
 new Vue({

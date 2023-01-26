@@ -52,7 +52,7 @@ export default {
   computed: {
 
     authors() {
-      return this.$store.getters.obtenerAutores;
+      return this.$store.getters.obtenerAuthors;
     },
 
   },

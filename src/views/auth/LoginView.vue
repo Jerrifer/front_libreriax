@@ -29,57 +29,42 @@
 
 <script>
 
-import axios from 'axios';
-import { show_alerta } from '@/alerts';
-
+import { show_alert } from '@/plugins/alerts';
 export default {
 
     data() {
         return{
-                 email: '',
-                 password:'',
+                email: '',
+                password:'',
              }
+    },
+    computed: {
+        auth() {
+            return this.$store.getters.auth
+        },
     },
     methods:{
 
         login() {
-
-            event.preventDefault();
-
-            var parametros = {
+            var user = {
                 email: this.email.trim(),
                 password: this.password.trim()
             }
-
-            axios({method:'POST', url:'http://localhost:8000/api/login', data:parametros}).then(function(respuesta){
-                    console.log(respuesta.data);
-                    var status = respuesta.data.status;
-
-                    if (status == 'success') {
-                        localStorage.setItem('usuario', JSON.stringify(respuesta.data.results.user));
-                        localStorage.setItem('access_token', JSON.stringify(respuesta.data.results.access_token));
-
-                        console.log(status);
-
-                        //axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('access_token')}`
-
-                        show_alerta('Usuario existe', status);
-                        window.setTimeout(function() {
-                            window.location.href='/';
-                        }, 1000);
-                    }else{
-                        var listado ='';
-                        var msg = respuesta.data.message
-                        var errores = respuesta.data.results;
-                        Object.keys(errores).forEach(
-                            key =>  listado += errores[key][0]+'.'
-                        );
-                        show_alerta(msg, listado);
-                    }
-            }).catch(function(error){
-                show_alerta('Error en la solicitud', error);
+            this.$store.dispatch("login", user)
+            .then(() => {
+                if (this.auth == true) {
+                    show_alert('Usuario existe', 'success');
+                    window.setTimeout(function() {
+                        window.location.href='/';
+                    }, 1000);
+                }
             })
-
+            .catch(() => {
+                if (this.usuario == null) {
+                    show_alert('Correo electrónico o contraseña incorrectos', 'danger');
+                }
+            })
+            event.preventDefault();
         }
 
     }

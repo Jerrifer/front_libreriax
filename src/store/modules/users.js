@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 const users = {
+
     state: {
         users: [],
     },
@@ -26,6 +27,10 @@ const users = {
                         indice: (i+1),
                         id_user:                response.data.results[i].id_user,
                         name:                   response.data.results[i].name,
+                        lastname:                   response.data.results[i].lastname,
+                        email:                   response.data.results[i].email,
+                        phone_number:                   response.data.results[i].phone_number,
+
                         })
                 }
                 context.commit("enviarUsers", users)

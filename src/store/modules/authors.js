@@ -9,13 +9,13 @@ const authors = {
 
     getters: {
   
-        obtenerAutores(state){
+        obtenerAuthors(state){
           return state.authors
         },
     },
 
     mutations: {
-        enviarAutores(state, authors){
+        enviarAuthors(state, authors){
         state.authors = authors
       }
     },
@@ -33,7 +33,7 @@ const authors = {
                         name_author:                   response.data.results[i].name_author,
                         })
                 }
-                context.commit("enviarAutores", authors)
+                context.commit("enviarAuthors", authors)
                 console.log(response.data);
             })
             .catch(() =>{})

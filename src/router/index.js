@@ -10,6 +10,7 @@ import UserEdit from '../views/users/UserEditView'
 import EditorialList from '../views/editorials/EditorialListView'
 import EditorialCreate from '../views/editorials/EditorialCreateView'
 import EditorialEdit from '../views/editorials/EditorialEditView'
+import EditorialGraphic from '../views/editorials/EditorialGraphicView'
 
 import AuthorList from '../views/authors/AuthorListView'
 import AuthorCreate from '../views/authors/AuthorCreateView'
@@ -94,6 +95,11 @@ export const routes = [
     path: '/editorials/edit/:id',
     name: 'editorialedit',
     component:  EditorialEdit
+  },
+  {
+    path: '/editorials/graphic',
+    name: 'editorialgraphic',
+    component:  EditorialGraphic
   },
 
   //autores

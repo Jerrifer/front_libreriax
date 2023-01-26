@@ -4,6 +4,7 @@ import VueRouter from 'vue-router'
 import {routes} from './router'
 import {store} from './store/index'
 import axios from 'axios'
+import "./plugins/chart.js"
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap/dist/js/bootstrap'

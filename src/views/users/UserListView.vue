@@ -2,6 +2,9 @@
   <div class="row">
    <div class="col-lg-8 offset-lg-2">
        <div class="table-responsive">
+            <button class="btn btn-outline-success float-end m-2" v-on:click="downloadXls()">
+                <i class="fa-sharp fa-solid fa-file-excel"></i> Descargar excel
+            </button>
             <router-link to="/users/create" class="btn btn-outline-dark float-end m-2">
                 <i class="fa-solid fa-database"></i> Registrar
             </router-link>
@@ -48,6 +51,7 @@
 
 <script>
 import { show_alert, swalWithBootstrapButtons } from '../../plugins/alerts.js'
+import exportFromJSON from 'export-from-json';
 
 export default {
 
@@ -100,6 +104,16 @@ export default {
             }
        });
     },
+
+    downloadXls() {
+
+        const data = this.users;
+        const fileName = 'download';
+        const exportType = exportFromJSON.types.xls
+
+        exportFromJSON({ data, fileName, exportType});
+
+    }
   }
 }
 </script>

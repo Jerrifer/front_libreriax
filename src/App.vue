@@ -1,4 +1,15 @@
 <template>
+
+
+
+
+
+
+
+
+
+
+
   <div id="app">
     <nav class="navbar navbar-expand-lg bg-dark ">
       <div class="container-fluid">
@@ -8,12 +19,12 @@
         </button>
         <div  class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
+            <li v-if="auth== false" class="nav-item">
               <router-link to="/login" class="nav-link link-light" href="#">LogIn</router-link>
             </li>
           </ul>
         </div>
-        <button  v-on:click="logout" class="font-bold rounded-md btn btn-outline-light"> LogOut </button>
+        <button v-if="auth == true" v-on:click="logout" class="font-bold rounded-md btn btn-outline-light"> LogOut </button>
       </div>
     </nav>
     <router-view/>
@@ -29,11 +40,12 @@ import { show_alert } from './plugins/alerts'
     data() {
       return {
         usuario:null,
+        auth: false
       }
     },
 
     computed: {
-      auth () {
+      Auth () {
         return this.$store.getters.auth
       }
     },

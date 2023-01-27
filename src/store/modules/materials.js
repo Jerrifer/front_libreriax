@@ -24,14 +24,14 @@ const materials = {
                 const materials = []
                 for(let i = 0; i < response.data.results.length; i++){
                     materials.push({
-                        indice: (i+1),
+                        indice: (i),
                         id_material:                     response.data.results[i].id_material,
                         name_material:                   response.data.results[i].name_material,
-                        editorial_id:                   response.data.results[i].editorial_id,
-                        type_material_id:                   response.data.results[i].type_material_id,
-                        document:                   response.data.results[i].document,
-                        name_editorial:                   response.data.results[i].name_editorial,
-                        name_type:                   response.data.results[i].name_type,
+                        editorial_id:                    response.data.results[i].editorial_id,
+                        type_material_id:                response.data.results[i].type_material_id,
+                        document:                        response.data.results[i].document,
+                        name_editorial:                  response.data.results[i].name_editorial,
+                        name_type:                       response.data.results[i].name_type,
 
 
                         })

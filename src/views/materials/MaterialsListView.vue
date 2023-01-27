@@ -6,6 +6,9 @@
                 <router-link to="/materials/create" class="btn btn-outline-dark float-end m-2">
                     <i class="fa-solid fa-database"></i> Registrar
                 </router-link>
+                <router-link to="/materials/graphic" class="btn btn-outline-warning float-end m-2">
+                  <i class="fa-solid fa-chart-pie"></i> Gráfica
+                </router-link>
                 <table
                  class="table table-hover table-dark">
                     <thead>

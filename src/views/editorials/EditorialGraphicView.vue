@@ -1,7 +1,9 @@
 <template>
-    <div>
-        <h1>{{ msg }}</h1>
-        <canvas id="myChart" width="400" height="400"></canvas>
+    <div class="row">
+        <div class="col-md-3 offset-md-3">
+            <h1>{{ msg }}</h1>
+            <canvas id="myChart" width="400" height="400"></canvas>
+        </div>
     </div>
 </template>
 

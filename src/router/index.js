@@ -1,7 +1,8 @@
 
-import HomeView from '../views/home/HomeView.vue'
+import Home from '../views/home/HomeView.vue'
 
-import LoginView from '../views/auth/LoginView'
+import Login from '../views/auth/LoginView'
+import SigIn from '../views/auth/SigInView'
 
 import UserList from '../views/users/UserListView'
 import UserCreate from '../views/users/UserCreateView'
@@ -28,17 +29,24 @@ import MaterialsList from '../views/materials/MaterialsListView'
 import MaterialsCreate from '../views/materials/MaterialsCreateView'
 import MaterialsEdit from '../views/materials/MaterialsEditView'
 import MaterialsDetail from '../views/materials/MaterialsDetailView'
+import MaterialsGraphic from '../views/materials/MaterialsGraphicView'
+
 
 export const routes = [
   {
     path: '/',
     name: 'home',
-    component: HomeView
+    component: Home
   },
   {
     path: '/login',
     name: 'login',
-    component: LoginView
+    component: Login
+  },
+  {
+    path: '/sigin',
+    name: 'sigin',
+    component: SigIn
   },
 
   //Usuarios
@@ -78,6 +86,11 @@ export const routes = [
     path: '/materials/detail/:id',
     name: 'materialsdetail',
     component:  MaterialsDetail
+  },
+  {
+    path: '/materials/graphic',
+    name: 'materialsgrphic',
+    component:  MaterialsGraphic
   },
 
    //editoriales

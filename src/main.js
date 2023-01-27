@@ -4,7 +4,8 @@ import VueRouter from 'vue-router'
 import {routes} from './router'
 import {store} from './store/index'
 import axios from 'axios'
-import "./plugins/chart.js"
+
+import vuetify from '@/plugins/vuetify' // path to vuetify export
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap/dist/js/bootstrap'
@@ -28,5 +29,6 @@ axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem(
 new Vue({
   router,
   store,
+  vuetify,
   render: h => h(App)
 }).$mount('#app')
